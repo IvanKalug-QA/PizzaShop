@@ -6,6 +6,7 @@ from app.schemas.pizza import PizzaCreate
 
 class PizzaCRUD:
     async def create_pizza(
+        self,
         pizza: PizzaCreate,
         session: AsyncSession
     ) -> Pizza:
