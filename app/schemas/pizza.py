@@ -6,6 +6,10 @@ class PizzaCreate(BaseModel):
     time: str
 
 
+class PizzaOrder(BaseModel):
+    name: str
+
+
 class PizzaRead(BaseModel):
     id: int
     name: str
