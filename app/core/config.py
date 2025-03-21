@@ -8,6 +8,11 @@ class Setting(BaseSettings):
     secret: str
     first_superuser_email: EmailStr
     first_superuser_password: str
+    rabbitmq_url: str
+    queue_name: str
+    mail_server: str
+    mail_username: str
+    mail_password: str
 
     class Config:
         env_file = '.env'
