@@ -1,4 +1,5 @@
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
 
 from app.models import Pizza
 from app.schemas.pizza import PizzaCreate
@@ -15,6 +16,14 @@ class PizzaCRUD:
         await session.commit()
         await session.refresh(new_pizza)
         return new_pizza
+
+    async def get_all_pizzas(
+        self, session: AsyncSession
+    ):
+        pizzas = await session.execute(
+            select(Pizza)
+        )
+        return pizzas.scalars().all()
 
 
 pizza_crud = PizzaCRUD()

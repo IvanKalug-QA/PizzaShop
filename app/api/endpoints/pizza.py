@@ -10,9 +10,10 @@ from app.schemas.pizza import PizzaCreate, PizzaRead, PizzaOrder
 from app.validators.pizza import check_duplicate_name
 from app.database.pizza import pizza_crud
 from app.rabbitmq.pizza import async_rabbitmq
+from app.utils.smtp import smtp_server
 
 
-router = APIRouter(tags=['pizza'])
+router = APIRouter(tags=['pizza'], prefix='pizza')
 
 
 @router.post(
@@ -28,8 +29,18 @@ async def add_pizza(
     return new_pizza
 
 
-# First Test
-@router.post('/order')
+@router.get(
+    '/info', dependencies=[Depends(current_user)],
+    response_model=list[PizzaRead],
+    response_model_exclude=['id'])
+async def get_pizzas(session: AsyncSession = Depends(get_async_session)):
+    pizzas_catalog = await pizza_crud.get_all_pizzas(
+        session
+    )
+    return pizzas_catalog
+
+
+@router.post('/buy')
 async def order_pizza(order: PizzaOrder, user=Depends(current_user)):
     body = {'user_id': user.id}
     await async_rabbitmq.send_message_to_queue(json.dumps(body))

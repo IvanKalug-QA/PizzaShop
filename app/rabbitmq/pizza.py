@@ -1,15 +1,17 @@
 import json
 import asyncio
+from datetime import datetime
 
 import aio_pika
 
 from app.core.config import setting
+from app.utils.smtp import smtp_server
 
 
 class RabbitMQAsync:
     async def connect_to_rabbitmq(self):
         connection = await aio_pika.connect_robust(
-            setting.rebbitmq_url
+            setting.rabbitmq_url
         )
         return connection
 
@@ -41,10 +43,16 @@ class RabbitMQAsync:
                     try:
                         body = message.body.decode()
                         order_data = json.loads(body)
-                        order_user_id = order_data['user_id']
-                        if user_id == order_user_id:
+                        pizza_name = order_data['pizza_name']
+                        order_email = order_data['email']
+                        end_time = datetime.fromisoformat(
+                            order_data['end_time'])
+                        current_time = datetime.now()
+                        if current_time >= end_time:
                             await message.ack()
-                            return f'You -> {order_user_id}'
+                            await smtp_server.send_message_order(
+                                order_email, pizza_name
+                            )
                         else:
                             await message.nack(requeue=True)
                     except Exception:
