@@ -19,11 +19,20 @@ class PizzaCRUD:
 
     async def get_all_pizzas(
         self, session: AsyncSession
-    ):
+    ) -> list[Pizza]:
         pizzas = await session.execute(
             select(Pizza)
         )
         return pizzas.scalars().all()
+
+    async def get_pizza(
+        pizza_name: str,
+        session: AsyncSession
+    ) -> Pizza | None:
+        pizza = await session.execute(
+            select(Pizza).where(Pizza.name == pizza_name)
+        )
+        return pizza.scalar_one_or_none()
 
 
 pizza_crud = PizzaCRUD()
