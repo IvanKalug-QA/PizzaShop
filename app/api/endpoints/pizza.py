@@ -11,7 +11,6 @@ from app.schemas.pizza import PizzaCreate, PizzaRead, PizzaOrder
 from app.validators.pizza import check_duplicate_name, check_exists_pizza
 from app.database.pizza import pizza_crud
 from app.rabbitmq.pizza import async_rabbitmq
-from app.utils.smtp import smtp_server
 
 
 router = APIRouter(tags=['pizza'], prefix='pizza')
