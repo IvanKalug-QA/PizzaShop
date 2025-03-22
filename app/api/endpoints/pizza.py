@@ -13,7 +13,7 @@ from app.database.pizza import pizza_crud
 from app.rabbitmq.pizza import async_rabbitmq
 
 
-router = APIRouter(tags=['pizza'], prefix='pizza')
+router = APIRouter(tags=['pizza'], prefix='/pizza')
 
 
 @router.post(
@@ -41,20 +41,20 @@ async def get_pizzas(session: AsyncSession = Depends(get_async_session)):
     return pizzas_catalog
 
 
-@router.post('/buy_pizza')
-async def order_pizza(
-        order: PizzaOrder,
-        user=Depends(current_user),
-        session: AsyncSession = Depends(get_async_session)):
-    await check_exists_pizza(order.name, session)
-    pizza = await pizza_crud.get_pizza(order.name, session)
-    body = {
-        'pizza_name': order.name,
-        'email': user.email,
-        'end_time': (
-            datetime.now() + timedelta(minutes=pizza.time)).isoformat()
-    }
-    await async_rabbitmq.send_message_to_queue(json.dumps(body))
-    return JSONResponse(
-        {'message': f'DONE! Wait your pizza {pizza.time} minute(s).'},
-        status_code=200)
+# @router.post('/buy_pizza')
+# async def order_pizza(
+#         order: PizzaOrder,
+#         user=Depends(current_user),
+#         session: AsyncSession = Depends(get_async_session)):
+#     await check_exists_pizza(order.name, session)
+#     pizza = await pizza_crud.get_pizza(order.name, session)
+#     body = {
+#         'pizza_name': order.name,
+#         'email': user.email,
+#         'end_time': (
+#             datetime.now() + timedelta(minutes=pizza.time)).isoformat()
+#     }
+#     await async_rabbitmq.send_message_to_queue(json.dumps(body))
+#     return JSONResponse(
+#         {'message': f'DONE! Wait your pizza {pizza.time} minute(s).'},
+#         status_code=200)

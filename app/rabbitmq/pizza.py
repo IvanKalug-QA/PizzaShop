@@ -25,7 +25,7 @@ class RabbitMQAsync:
             )
             print(f"Sent message: {message} to queue: {setting.queue_name}")
 
-    async def consume_messages_from_queue(self, user_id: int):
+    async def consume_messages_from_queue(self):
         connection = await self.connect_to_rabbitmq()
         async with connection:
             channel = await connection.channel()

@@ -13,6 +13,7 @@ class Setting(BaseSettings):
     mail_server: str
     mail_username: str
     mail_password: str
+    redis_host: str
 
     class Config:
         env_file = '.env'
