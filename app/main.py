@@ -1,4 +1,3 @@
-import asyncio
 import subprocess
 
 from fastapi import FastAPI
@@ -6,7 +5,9 @@ from fastapi import FastAPI
 from app.core.config import setting
 from app.api.router import main_router
 from app.core.init_db import create_first_superuser
+from app.logs.config import setup_loggers
 
+setup_loggers()
 
 app = FastAPI(title=setting.app_title)
 

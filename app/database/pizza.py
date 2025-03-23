@@ -26,6 +26,7 @@ class PizzaCRUD:
         return pizzas.scalars().all()
 
     async def get_pizza(
+        self,
         pizza_name: str,
         session: AsyncSession
     ) -> Pizza | None:

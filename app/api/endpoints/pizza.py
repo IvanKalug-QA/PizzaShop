@@ -1,4 +1,5 @@
 import json
+import logging
 from datetime import datetime, timedelta
 
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -12,6 +13,7 @@ from app.validators.pizza import check_duplicate_name, check_exists_pizza
 from app.database.pizza import pizza_crud
 from app.rabbitmq.pizza import async_rabbitmq
 
+logger = logging.getLogger('endpoints')
 
 router = APIRouter(tags=['pizza'], prefix='/pizza')
 
@@ -26,6 +28,7 @@ async def add_pizza(
         session: AsyncSession = Depends(get_async_session)):
     await check_duplicate_name(pizza.name, session)
     new_pizza = await pizza_crud.create_pizza(pizza, session)
+    logger.info(f'Add pizza {new_pizza.name}')
     return new_pizza
 
 
@@ -55,6 +58,8 @@ async def order_pizza(
             datetime.now() + timedelta(minutes=pizza.time)).isoformat()
     }
     await async_rabbitmq.send_message_to_queue(json.dumps(body))
+    logger.info(
+        f'Pizza -> {pizza.name} buy and send email user -> {user.email}')
     return JSONResponse(
         {'message': f'DONE! Wait your pizza {pizza.time} minute(s).'},
         status_code=200)

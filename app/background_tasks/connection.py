@@ -5,7 +5,6 @@ from arq.cron import cron
 from app.core.config import setting
 from app.background_tasks.tasks import check_rabbitmq
 
-
 redis_settings = RedisSettings(host=setting.redis_host, port=6379)
 
 worker = Worker(
