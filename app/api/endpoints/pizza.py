@@ -13,7 +13,7 @@ from app.database.pizza import pizza_crud
 from app.rabbitmq.pizza import async_rabbitmq
 
 
-router = APIRouter(tags=['pizza'], prefix='pizza')
+router = APIRouter(tags=['pizza'], prefix='/pizza')
 
 
 @router.post(
