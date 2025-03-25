@@ -1,6 +1,7 @@
 import subprocess
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import setting
 from app.api.router import main_router
@@ -11,6 +12,14 @@ setup_loggers()
 
 app = FastAPI(title=setting.app_title)
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[setting.main_host,],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 app.include_router(main_router)
 
 worker_process = None
@@ -18,7 +27,7 @@ worker_process = None
 
 @app.on_event('startup')
 async def startup():
-    await create_first_superuser()
+    # await create_first_superuser()
     global worker_process
     worker_process = subprocess.Popen(
         ["arq", "app.background_tasks.connection.worker"])

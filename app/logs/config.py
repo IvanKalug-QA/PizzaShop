@@ -1,16 +1,18 @@
 import logging
 from logging.handlers import RotatingFileHandler
-
+from pathlib import Path
 
 LOG_FORMAT: str = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+LOG_DIR = Path(__file__).parent.parent / "logs"
 
 
 def setup_loggers():
+    LOG_DIR.mkdir(parents=True, exist_ok=True)
     # Endpoints FastAPI logger
     endpoints_logger = logging.getLogger('endpoints')
     endpoints_logger.setLevel(logging.INFO)
     endpoints_handler = RotatingFileHandler(
-        filename='app/logs/endpoints.log',
+        filename=str(LOG_DIR / 'endpoints.log'),
         maxBytes=1024*1024*5,
         backupCount=5
     )
@@ -21,7 +23,7 @@ def setup_loggers():
     rabbitmq_logger = logging.getLogger('rabbitmq')
     rabbitmq_logger.setLevel(logging.INFO)
     rabbitmq_handler = RotatingFileHandler(
-        filename='app/logs/rabbitmq.log',
+        filename=str(LOG_DIR / 'rabbitmq.log'),
         maxBytes=1024*1024*5,
         backupCount=5
     )
@@ -32,7 +34,7 @@ def setup_loggers():
     background_tasks_logger = logging.getLogger('backround_tasks')
     background_tasks_logger.setLevel(logging.INFO)
     background_tasks_handler = RotatingFileHandler(
-        filename='app/logs/background_tasks.log',
+        filename=str(LOG_DIR / 'background_tasks.log'),
         maxBytes=1024*1024*5,
         backupCount=5
     )
@@ -40,5 +42,3 @@ def setup_loggers():
         logging.Formatter(LOG_FORMAT)
     )
     background_tasks_logger.addHandler(background_tasks_handler)
-
-    

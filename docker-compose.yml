@@ -1,0 +1,52 @@
+version: '3'
+
+volumes:
+  redis_data:
+  rabbitmq_data:
+  postgres_data:
+  alembic:
+
+services:
+  postgres:
+      image: postgres:13
+      environment:
+        POSTGRES_USER: user
+        POSTGRES_PASSWORD: password
+        POSTGRES_DB: dbname
+      volumes:
+      - postgres_data:/var/lib/postgresql/data
+      ports:
+        - "5432:5432"
+  redis:
+      image: redis:alpine
+      restart: always
+      volumes:
+      - redis_data:/data
+      ports:
+      - "6379:6379"
+  rabbitmq:
+    image: rabbitmq:management
+    restart: always
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+  backend:
+    build: ./app
+    env_file: .env
+    environment:
+      - PYTHONPATH=/
+    restart: always
+    volumes:
+      - alembic:/app/alembic
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+      - redis
+      - rabbitmq
+  
