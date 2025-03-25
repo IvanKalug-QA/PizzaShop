@@ -20,7 +20,8 @@ worker_process = None
 async def startup():
     await create_first_superuser()
     global worker_process
-    worker_process = subprocess.Popen(["arq", "app.background_tasks.connection.worker"])
+    worker_process = subprocess.Popen(
+        ["arq", "app.background_tasks.connection.worker"])
 
 
 @app.on_event('shutdown')
