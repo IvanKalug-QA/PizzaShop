@@ -1,11 +1,14 @@
 import json
 import asyncio
+import logging
 from datetime import datetime
 
 import aio_pika
 
 from app.core.config import setting
 from app.utils.smtp import smtp_server
+
+logger = logging.getLogger('rabbitmq')
 
 
 class RabbitMQAsync:
@@ -23,7 +26,8 @@ class RabbitMQAsync:
                 aio_pika.Message(body=message.encode()),
                 routing_key=setting.queue_name
             )
-            print(f"Sent message: {message} to queue: {setting.queue_name}")
+            logger.info(
+                f"Sent message: {message} to queue: {setting.queue_name}")
 
     async def consume_messages_from_queue(self):
         connection = await self.connect_to_rabbitmq()
@@ -53,6 +57,8 @@ class RabbitMQAsync:
                             await smtp_server.send_message_order(
                                 order_email, pizza_name
                             )
+                            logger.info(
+                                f'Sent message on email -> {order_email}')
                         else:
                             await message.nack(requeue=True)
                     except Exception:
