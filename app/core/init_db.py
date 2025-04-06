@@ -1,3 +1,4 @@
+import asyncio
 import contextlib
 
 from fastapi_users.exceptions import UserAlreadyExists
@@ -38,3 +39,7 @@ async def create_first_superuser():
         password=setting.first_superuser_password,
         is_superuser=True
     )
+
+
+if __name__ == '__main__':
+    asyncio.run(create_first_superuser())
