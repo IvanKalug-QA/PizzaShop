@@ -9,10 +9,11 @@ volumes:
 services:
   postgres:
       image: postgres:13
+      env_file: .env
       environment:
-        POSTGRES_USER: user
-        POSTGRES_PASSWORD: password
-        POSTGRES_DB: dbname
+        POSTGRES_USER: ${POSTGRES_USER}
+        POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+        POSTGRES_DB: ${POSTGRES_DB}
       volumes:
       - postgres_data:/var/lib/postgresql/data
       ports:
@@ -26,6 +27,7 @@ services:
       - "6379:6379"
   rabbitmq:
     image: rabbitmq:management
+    env_file: .env
     restart: always
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
@@ -33,8 +35,8 @@ services:
       - "5672:5672"
       - "15672:15672"
     environment:
-      - RABBITMQ_DEFAULT_USER=guest
-      - RABBITMQ_DEFAULT_PASS=guest
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASS}
   backend:
     build: ./app
     env_file: .env
