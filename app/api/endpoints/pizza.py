@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
+from fastapi_redis_cache import cache_one_hour
 
 from app.core.user import current_superuser, current_user
 from app.core.db import get_async_session
@@ -33,6 +34,7 @@ async def add_pizza(
     return new_pizza
 
 
+@cache_one_hour()
 @router.get(
     '/info',
     dependencies=[Depends(current_user)],
