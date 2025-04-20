@@ -15,6 +15,7 @@ class Setting(BaseSettings):
     mail_password: str
     redis_host: str
     main_host: str
+    cache_redis_url: str
 
     class Config:
         env_file = '.env'
