@@ -3,7 +3,7 @@ import logging
 from datetime import datetime, timedelta
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 from fastapi.responses import JSONResponse
 from fastapi_redis_cache import cache_one_hour
 
@@ -13,7 +13,7 @@ from app.schemas.pizza import PizzaCreate, PizzaRead, PizzaOrder
 from app.validators.pizza import check_duplicate_name, check_exists_pizza
 from app.database.pizza import pizza_crud
 from app.rabbitmq.pizza import async_rabbitmq
-from app.main import limiter
+from app.core.limiter import limiter
 
 logger = logging.getLogger('endpoints')
 
@@ -50,6 +50,7 @@ async def get_pizzas(session: AsyncSession = Depends(get_async_session)):
 @router.post('/buy_pizza')
 @limiter.limit('1000/minute')
 async def order_pizza(
+        request: Request,
         order: PizzaOrder,
         user=Depends(current_user),
         session: AsyncSession = Depends(get_async_session)):
