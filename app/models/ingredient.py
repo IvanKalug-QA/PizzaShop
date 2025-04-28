@@ -2,7 +2,7 @@ from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.db import Base
-from app.models.pizza import PizzaIngredient
+from app.models.pizza import PizzaIngredient, Pizza
 
 
 class Ingredient(Base):
