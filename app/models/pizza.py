@@ -25,5 +25,5 @@ class Pizza(Base):
     name: Mapped[str] = mapped_column(String(50), nullable=False, unique=True)
     time: Mapped[int] = mapped_column(Integer, nullable=False)
     ingredients: Mapped[list['Ingredient']] = relationship(
-        'Ingredient', secondary=PizzaIngredient, back_populates='pizza'
+        'Ingredient', secondary=PizzaIngredient, back_populates='pizzas'
     )

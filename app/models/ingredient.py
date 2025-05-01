@@ -8,8 +8,8 @@ from app.models.pizza import PizzaIngredient, Pizza
 class Ingredient(Base):
     name: Mapped[str] = mapped_column(
         String(50), nullable=False, unique=True)
-    pizza: Mapped[list['Pizza']] = relationship(
-        'Ingredient', secondary=PizzaIngredient,
+    pizzas: Mapped[list['Pizza']] = relationship(
+        'Pizza', secondary=PizzaIngredient,
         back_populates='ingredients'
     )
 
